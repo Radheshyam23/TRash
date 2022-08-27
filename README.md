@@ -1,2 +1,2 @@
 # TRash
-T Radheshyam's spinoff of bash!
+T Radheshyam's spinoff of shell!

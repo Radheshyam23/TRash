@@ -44,8 +44,8 @@ void ProcessCommand(char *CmdStr)
     else if (strcmp(TokenArr[0],"pwd") == 0)
         printf("%s\n",CurrLocation);
 
-    // else if (strcmp(TokenArr[0],"ls") == 0)
-    //     HandleLS(TokenArr,count);
+    else if (strcmp(TokenArr[0],"ls") == 0)
+        HandleLS(TokenArr,count);
     
     else
     {

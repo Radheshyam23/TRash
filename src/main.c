@@ -28,8 +28,6 @@ void ProcessCommand(char *CmdStr)
         TokenArr[count] = temp;
         count++;
     }
-
-///////////////
     
     if(strcmp(TokenArr[0],"cd") == 0)
         HandleCD(TokenArr,count);
@@ -46,6 +44,9 @@ void ProcessCommand(char *CmdStr)
 
     else if (strcmp(TokenArr[0],"ls") == 0)
         HandleLS(TokenArr,count);
+
+    else if(strcmp(TokenArr[0],"pinfo") == 0)
+        HandlePinfo(TokenArr,count);
     
     else
     {
@@ -60,7 +61,6 @@ void ProcessCommand(char *CmdStr)
         else
             command_fg(TokenArr, count);
     }    
-/////////////
     free(TokenArr);
 }
 

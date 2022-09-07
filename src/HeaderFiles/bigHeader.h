@@ -13,6 +13,7 @@
 #include <sys/types.h>
 #include <grp.h>
 #include <pwd.h>
+#include <fcntl.h>
 
 
 #include "globalVariables.h"

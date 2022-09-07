@@ -132,8 +132,10 @@ void HandleLS(char **TokensArr, int count)
                 printf("%s %s ",getpwuid(fileStat.st_uid)->pw_name,getgrgid(fileStat.st_gid)->gr_name);
                 printf("%ld ",fileStat.st_size);
                 char *time = ctime(&fileStat.st_mtime);
-                time[strlen(time)-1] = '\0';
-                printf("%s ",time);
+                // dont want to print year
+                time[16] = '\0';
+                // dont want ot print day.
+                printf("%s ",&time[4]);
                 printf("%s\n",&FilesList[i][printOffset]);
             }
 

@@ -142,3 +142,49 @@ void ChildDone(int signal)
         // TerminalPrompt();
     }
 }
+
+void HandlePinfo(char **TokenArr, int count)
+{
+    char *pid = (char*)malloc(10);
+    if (count == 1)
+        // pid = itoa(getpid());
+        sprintf(pid,"%d",getpid());
+    else if (count == 2)
+        strcpy(pid,TokenArr[1]);
+    else
+    {
+        printf("Too many arguments\n");
+        return;
+    }
+
+    char *processDetsFile = (char*)malloc(20);
+    strcpy(processDetsFile,"/proc/");
+    strcat(processDetsFile,pid);
+    strcat(processDetsFile,"/stat");
+
+    // FILE *filePtr = fopen(processDetsFile,'r');
+    int inpFD = open(processDetsFile,O_RDONLY);
+    char contents[500];
+    read(inpFD,contents,500);
+    close(inpFD);
+
+    char **statTokens = (char**)calloc(53,sizeof(char*));
+    const char delimPtr[2] = " ";
+
+    statTokens[0] = strtok(contents,delimPtr);
+
+    char *temp;
+    count = 1;
+    while(temp = strtok(NULL,delimPtr))
+    {
+        statTokens[count] = temp;
+        count++;
+    }
+
+    printf("pid: %s\n",pid);
+    printf("process status: %s",statTokens[2]);
+    if (strcmp(statTokens[7], statTokens[0]) == 0)
+        printf("+");
+    printf("\n");
+    printf("memory: %s\n",statTokens[22]);
+}

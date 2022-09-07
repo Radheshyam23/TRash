@@ -18,5 +18,6 @@ void initBGqueue();
 void addBG(int pid, char* name);
 void completeBG(int pid);
 char* RetrieveBGName(int pid);
+void HandlePinfo(char **TokenArr, int count);
 
 #endif

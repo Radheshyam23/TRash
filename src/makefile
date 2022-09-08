@@ -1,0 +1,2 @@
+makeTRash:
+	gcc command_ls.c history.c directoryMovements.c command_fgbg.c terminalDisp.c main.c -o makeTRash

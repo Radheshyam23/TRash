@@ -21,5 +21,6 @@
 #include "directoryMovements.h"
 #include "command_ls.h"
 #include "commandfgbg.h"
+#include "history.h"
 
 #endif

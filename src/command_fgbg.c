@@ -11,7 +11,8 @@ void initBGqueue()
 void addBG(int pid, char* name)
 {
     BGQ* NewProcess = (BGQ*)malloc(sizeof(BGQ));
-    NewProcess->name = name;
+    NewProcess->name = (char*)malloc(strlen(name));
+    strcpy(NewProcess->name,name);
     NewProcess->pid = pid;
     NewProcess->next = NULL;
 
@@ -49,9 +50,11 @@ char* RetrieveBGName(int pid)
 
     while(temp != NULL)
     {
+        // printf("BG ll not empty\n");
         if (temp->pid == pid)
         {
             BGname = temp->name;
+            // printf("Entry found!: %s\n",temp->name);
             break;
         }
     }
@@ -73,6 +76,7 @@ void command_fg(char **TokenArr, int count)
         if (x == -1)
         {
             perror("<execvp>");
+            exit(0);
             return;
         }
     }
@@ -88,7 +92,9 @@ void command_fg(char **TokenArr, int count)
         long startTime = time(NULL);
         waitpid(pid,&stat,WUNTRACED);
         long endTime = time(NULL);
-        printf("Time: %ld\n",endTime-startTime);
+        long timeTaken = endTime - startTime;
+        if (timeTaken >= 1)
+            printf("Time: %ld\n",timeTaken);
         // processTime = endTime - startTime;
     }
 }
@@ -107,6 +113,7 @@ void command_bg(char **TokenArr, int count)
         if (x == -1)
         {
             perror("<execvp>");
+            exit(0);
             return;
         }
         exit(0);
@@ -122,6 +129,7 @@ void command_bg(char **TokenArr, int count)
     {
         printf("%d\n",pid);
         // printf("\e[4;32m%d\e[0m\n", pid);
+        // printf("Adding to LL: %d %s\n",pid,TokenArr[0]);
         addBG(pid,TokenArr[0]);
     }    
 }
@@ -135,9 +143,9 @@ void ChildDone(int signal)
     {
         char *processName = RetrieveBGName(pid);
         if (WIFEXITED(status))
-            printf("\n%swith pid = %d exited normally\n",processName,pid);
+            printf("\n%s with pid = %d exited normally\n",processName,pid);
         else
-            printf("\n%swith pid = %d exited abnormally\n",processName,pid);
+            printf("\n%s with pid = %d exited abnormally\n",processName,pid);
         completeBG(pid);
         // TerminalPrompt();
     }

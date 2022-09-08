@@ -5,7 +5,10 @@ void ProcessCommand(char *CmdStr)
     // First tokenise the string.
     // we need to deal with other de-limiters like ; & | etc. For Phase 1 however, only one command in the string.
     // So delim using space
-
+    
+    // printf("#a\n");
+    addHistory(CmdStr);
+    // printf("a#\n");
     char **TokenArr = (char**)calloc(5,sizeof(char*));
   
     // the string can have all the delimiters
@@ -17,18 +20,26 @@ void ProcessCommand(char *CmdStr)
 
     TokenArr[0] = strtok(CmdStr,delimPtr);
 
+
     if (TokenArr[0] == NULL)
         return;
 
     char *temp;
 
     int count = 1;
+
+    // printf("#b#\n");
+
     while(temp = strtok(NULL,delimPtr))
     {
         TokenArr[count] = temp;
         count++;
     }
     
+    // for (int i = 0; i < count; i++)
+    //     printf("##%s##|",TokenArr[i]);
+    // printf("\n");
+
     if(strcmp(TokenArr[0],"cd") == 0)
         HandleCD(TokenArr,count);
     
@@ -48,6 +59,18 @@ void ProcessCommand(char *CmdStr)
     else if(strcmp(TokenArr[0],"pinfo") == 0)
         HandlePinfo(TokenArr,count);
     
+    else if(strcmp(TokenArr[0],"history") == 0)
+        dispHistory();
+
+    else if(strcmp(TokenArr[0],"exit") == 0)
+    {
+        cacheHistory();
+        printf("Bye!\n");
+        exit(0);
+        return;
+        // printf("bruhhhhhh\n");
+    }
+
     else
     {
         if (strcmp(TokenArr[count-1], "&") == 0)
@@ -57,9 +80,13 @@ void ProcessCommand(char *CmdStr)
             TokenArr[count-1] = NULL;
             count--;
             command_bg(TokenArr, count);
+            // printf("Created a bg process\n");
         }
         else
+        {
             command_fg(TokenArr, count);
+            // printf("Created a FG proc\n");
+        }
     }    
     free(TokenArr);
 }
@@ -70,6 +97,7 @@ int main()
     setTerminalDisplay();
     // Place of running the code is our root (~).
     InitLocations();
+    retrieveHistory();
 
     initBGqueue();
 

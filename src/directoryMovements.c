@@ -71,13 +71,13 @@ void PrevDir()
 
 void GoToLocation(char *Location)
 {
-    printf("Location: %s\n",Location);
+    // printf("Location: %s\n",Location);
 
     DIR *Dir;
     Dir = opendir(Location);
     closedir(Dir);
 
-    printf("opendir done\n");
+    // printf("opendir done\n");
 
     // Location doesnt exist
     if (Dir == NULL)
@@ -86,16 +86,16 @@ void GoToLocation(char *Location)
         return;
     }        
     // Get the full path of the location and store in CurrLocation
-    printf("Read full path\n");
+    // printf("Read full path\n");
     char *FullPath = realpath(Location,NULL);
-    printf("Full path got\n");
+    // printf("Full path got\n");
     if (FullPath == NULL)
     {
         printf("No path\n");
         return;
     }
 
-    printf("Path is: %s\n",FullPath);
+    // printf("Path is: %s\n",FullPath);
 
     // Update PrevLocation
     strcpy(PrevLocation,CurrLocation);
@@ -127,7 +127,10 @@ void HandleCD(char **TokenArr, int count)
         else if (strcmp(TokenArr[1],"..") == 0)
             cdDotDot();
         else if (strcmp(TokenArr[1], "-") == 0)
+        {
             PrevDir();
+            printf("%s\n",CurrLocation);
+        }
         else if (strcmp(TokenArr[1], ".") == 0)
             strcpy(PrevLocation,CurrLocation);
         else

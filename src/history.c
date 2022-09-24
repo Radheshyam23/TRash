@@ -43,7 +43,7 @@ void addHistory(char *command)
     {
         // printf("History full\n");
         myHist.currIndex = 0;
-        myHist.startIndex++;
+        myHist.startIndex = (myHist.startIndex+1)%myHist.total;
     }
 
     // printf("start:%d curr:%d\n",myHist.startIndex,myHist.currIndex);

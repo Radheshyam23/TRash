@@ -8,10 +8,18 @@ void ChildDone(int signal);
 typedef struct BGqueue
 {
     int pid;
+    int jobID;
     char *name;
     struct BGqueue *next;
 }BGQ;
 BGQ Start;
+
+// typedef struct jobQ
+// {
+//     int pid;
+//     char *name;
+//     int jobID;
+// }jobQ;
 
 void initBGqueue();
 

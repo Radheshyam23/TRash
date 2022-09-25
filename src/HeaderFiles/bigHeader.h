@@ -23,5 +23,6 @@
 #include "commandfgbg.h"
 #include "history.h"
 #include "rawMode.h"
+#include "redirection.h"
 
 #endif

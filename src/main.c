@@ -18,11 +18,14 @@ void ProcessCommand(char *CmdStr)
     // So the original string itself is modified after strtok!!!
     // So hence, each of the pointers in TokenArr are not malloced! They are pointing to the og string...
 
-    TokenArr[0] = strtok(CmdStr,delimPtr);
+    int RedirFlag = 0;
 
+    TokenArr[0] = strtok(CmdStr,delimPtr);
 
     if (TokenArr[0] == NULL)
         return;
+    else if (strcmp(TokenArr[0],"<") == 0 || strcmp(TokenArr[0],">") == 0 || strcmp(TokenArr[0],">>") == 0)
+        RedirFlag = 1;
 
     char *temp;
 
@@ -33,6 +36,8 @@ void ProcessCommand(char *CmdStr)
     while(temp = strtok(NULL,delimPtr))
     {
         TokenArr[count] = temp;
+        if (strcmp(TokenArr[count],"<") == 0 || strcmp(TokenArr[count],">") == 0 || strcmp(TokenArr[count],">>") == 0)
+            RedirFlag = 1;
         count++;
     }
     
@@ -40,67 +45,10 @@ void ProcessCommand(char *CmdStr)
     //     printf("##%s##|",TokenArr[i]);
     // printf("\n");
 
-    // Save the StandardInp and StandardOp files before changing for piping and redirection
-    int SaveIn = dup(STDIN_FILENO);
-    int SaveOut = dup(STDOUT_FILENO);
+    if (RedirFlag == 1)
+        HandleRedirection(TokenArr,count);
 
-    // Check if there is a redirection symbol
-    // If there is, then change the input and output file buffers
-    for (int i=0; i<count; i++)
-    {
-        if (strcmp(TokenArr[i],"<") == 0)
-        {
-            if (i == count-1)
-            {
-                printf("No input file\n");
-                return;
-            }
-            int inpFileFD = open(TokenArr[i+1], O_RDONLY);
-            // change StandInp to inpFile
-            dup2(inpFileFD, STDIN_FILENO);
-
-            close(inpFileFD);
-        }
-        else if(strcmp(TokenArr[i],">") == 0)
-        {
-            if (i == count-1)
-            {
-                printf("No output file name given\n");
-                return;
-            }
-            int opFileFD = open(TokenArr[i+1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-
-            // change StandInp to inpFile
-            dup2(opFileFD, STDOUT_FILENO);
-
-            close(opFileFD);
-        }
-        else if(strcmp(TokenArr[i],">>") == 0)
-        {
-            if (i == count-1)
-            {
-                printf("No output file name given\n");
-                return;
-            }
-            int opFileFD = open(TokenArr[i+1], O_WRONLY | O_CREAT | O_APPEND, 0644);
-
-            // change StandInp to inpFile
-            dup2(opFileFD, STDOUT_FILENO);
-
-            close(opFileFD);
-        }
-        else
-            continue;
-
-        // remove tokens i and i+1
-        for(int k = i; k<count-2; k++)
-            TokenArr[k] = TokenArr[k+2];
-        
-        count -= 2;
-        i-=1;
-    }
-
-    if(strcmp(TokenArr[0],"cd") == 0)
+    else if(strcmp(TokenArr[0],"cd") == 0)
         HandleCD(TokenArr,count);
     
     else if (strcmp(TokenArr[0],"echo") == 0)
@@ -133,7 +81,7 @@ void ProcessCommand(char *CmdStr)
 
     else if(strcmp(TokenArr[0],"jobs") == 0)
     {
-        printf("In Jobs main\n");
+        // printf("In Jobs main\n");
         if (count > 1)
         {
             printf("Too many arguments\n");
@@ -161,12 +109,6 @@ void ProcessCommand(char *CmdStr)
         }
     }    
     free(TokenArr);
-
-
-    // Restore the StandardInp and StandardOp files
-    dup2(SaveIn, STDIN_FILENO);
-    dup2(SaveOut, STDOUT_FILENO);
-    
 }
 
 int main()

@@ -24,6 +24,10 @@ void retrieveHistory()
 
         while(count = getline(&tempLine,&tempSize,histFile) > 0)
         {
+            // shouldn't happen... If somehow history file has more than 20 entries, take only the first 20.
+            if (myHist.currIndex >= myHist.total)
+                break;
+
             // getline will allocate memory for tempLine by default if tempSize = 0 and tempLine = NULL
             myHist.History[myHist.currIndex] = tempLine;
             // if (myHist.History[myHist.currIndex][count - 1] == '\n')
@@ -38,14 +42,6 @@ void retrieveHistory()
 
 void addHistory(char *command)
 {
-
-    if (myHist.currIndex >= myHist.total)
-    {
-        // printf("History full\n");
-        myHist.currIndex = 0;
-        myHist.startIndex = (myHist.startIndex+1)%myHist.total;
-    }
-
     // printf("start:%d curr:%d\n",myHist.startIndex,myHist.currIndex);
     if (myHist.currIndex - 1 >= 0)
     {
@@ -71,24 +67,29 @@ void addHistory(char *command)
     
     // overwrite the 1st history element if > 20
     
-
-    if((myHist.currIndex != 0) && (myHist.currIndex == myHist.startIndex))
-    {
-        if (myHist.startIndex == myHist.total-1)
-            myHist.startIndex = 0;
-        else
-            myHist.startIndex++;
-    }
-
-    
     if (myHist.History[myHist.currIndex])
         free(myHist.History[myHist.currIndex]);
     
     myHist.History[myHist.currIndex] = (char*)malloc(strlen(command)*sizeof(char));
     strcpy(myHist.History[myHist.currIndex],command);
     // printf("Added to history: %s",myHist.History[myHist.currIndex]);
-    myHist.currIndex++;    
+    // myHist.currIndex++;    
     // printf("start: %d curr: %d\n",myHist.startIndex,myHist.currIndex);
+
+    
+    if (myHist.currIndex +1 >= myHist.total)
+    {
+        // printf("History full\n");
+        myHist.currIndex = 0;
+        myHist.startIndex = (myHist.startIndex+1)%myHist.total;
+    }
+    else if (myHist.currIndex + 1 == myHist.startIndex)
+    {
+        myHist.currIndex++;
+        myHist.startIndex = (myHist.startIndex+1)%myHist.total;
+    }
+    else
+        myHist.currIndex++;
 }
 
 void dispHistory()

@@ -3,6 +3,7 @@
 void initBGqueue()
 {
     Start.pid = -1;
+    Start.jobID = 0;
     Start.name = (char*) malloc(6);
     strcpy(Start.name,"Start");
     Start.next = NULL;
@@ -15,6 +16,7 @@ void addBG(int pid, char* name)
     strcpy(NewProcess->name,name);
     NewProcess->pid = pid;
     NewProcess->next = NULL;
+    NewProcess->jobID = Start.jobID++;
 
     if (Start.next != NULL)
         NewProcess->next = Start.next;
@@ -281,8 +283,8 @@ void DispAllBG()
             count++;
         }
 
-        printf("[%d] ",BGarr[k]->pid);      // should print job ID
-        if (strcmp(statTokens[2],"R") == 0)
+        printf("[%d] ",BGarr[k]->jobID);      // should print job ID
+        if (strcmp(statTokens[2],"R") == 0 || strcmp(statTokens[2],"S") == 0 || strcmp(statTokens[2],"D") == 0)
             printf("Running ");
         else
             printf("Stopped ");

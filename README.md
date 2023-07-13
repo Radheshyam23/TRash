@@ -17,4 +17,4 @@ The following are the C files used:
 -   [`history.c`](./src/history.c)
 -   [`terminalDisp.c`](./src/terminalDisp.c)
 
-All the header files are contained in the folder `HeaderFiles`
+All the header files are contained in the folder [`Headerfiles`](./src/HeaderFiles)
